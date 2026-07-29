@@ -1,20 +1,18 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// Book Class
+
 class Book {
     private String title;
     private String author;
     private boolean isBorrowed;
 
-    // Constructor
     public Book(String title, String author) {
         this.title = title;
         this.author = author;
         this.isBorrowed = false;
     }
 
-    // Getters
     public String getTitle() {
         return title;
     }
@@ -27,40 +25,32 @@ class Book {
         return isBorrowed;
     }
 
-    // Borrow a book
     public void borrow() {
         isBorrowed = true;
     }
 
-    // Return a book
     public void returnBook() {
         isBorrowed = false;
     }
 
-    // Display book information
     public String describe() {
         String status = isBorrowed ? "Borrowed" : "Available";
         return title + " by " + author + " [" + status + "]";
     }
 }
 
-
-// Library Class
 class Library {
     private ArrayList<Book> books;
 
-    // Constructor
     public Library() {
         books = new ArrayList<>();
     }
 
-    // Add a book
     public void addBook(Book book) {
         books.add(book);
         System.out.println(">> Book added successfully.");
     }
 
-    // List all books
     public void listBooks() {
         if (books.isEmpty()) {
             System.out.println("No books in the library.");
@@ -74,7 +64,6 @@ class Library {
         }
     }
 
-    // Borrow a book
     public void borrowBook(String title) {
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title)) {
@@ -93,7 +82,6 @@ class Library {
         System.out.println(">> Book not found.");
     }
 
-    // Return a book
     public void returnBook(String title) {
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title)) {
@@ -110,9 +98,7 @@ class Library {
         }
 
         System.out.println(">> Book not found.");
-    }
 
-    // Search a book
     public void searchBook(String title) {
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title)) {
@@ -126,8 +112,6 @@ class Library {
     }
 }
 
-
-// Main Class
 public class Main {
 
     public static void main(String[] args) {
@@ -148,7 +132,7 @@ public class Main {
 
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Clear input buffer
+            scanner.nextLine(); 
 
             switch (choice) {
 
