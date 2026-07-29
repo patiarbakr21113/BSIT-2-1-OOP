@@ -1,103 +1,131 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
-public class GradeTracker {
+public class ToolBox {
 
-    // Part A - Grade Scale (Array)
-    static int[] cutoffs = {90, 80, 70, 60, 0};
-    static String[] letters = {"A", "B", "C", "D", "F"};
+    static String greet(String name) {
+        return "Hello, " + name + "! Welcome to my Java Toolbox.";
+    }
+    static double area(double side) {
+        return side * side;
+    }
 
-    public static String letterFor(double grade) {
-        for (int i = 0; i < cutoffs.length; i++) {
-            if (grade >= cutoffs[i]) {
-                return letters[i];
-            }
+    static double area(double length, double width) {
+        return length * width;
+    }
+
+    static int sum(int... numbers) {
+        int total = 0;
+
+        for (int n : numbers) {
+            total += n;
         }
-        return "F";
+
+        return total;
+    }
+
+    static void swap(int a, int b) {
+        int temp = a;
+        a = b;
+        b = temp;
+
+        System.out.println("(inside swap) a = " + a + ", b = " + b);
+    }
+
+    static void addToBox(Box box, int amount) {
+        box.value = box.value + amount;
+    }
+
+    static class Box {
+        int value;
+
+        Box(int value) {
+            this.value = value;
+        }
     }
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
-        ArrayList<Student> roster = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        int choice;
 
-        int choice = 0;
-
-        while (choice != 4) {
-
-            System.out.println("\n=== Grade Tracker ===");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Students");
-            System.out.println("3. Class Average");
-            System.out.println("4. Exit");
+        do {
+            System.out.println("\n===== JAVA TOOLBOX =====");
+            System.out.println("1 - Greet me");
+            System.out.println("2 - Area (square or rectangle)");
+            System.out.println("3 - Sum of numbers");
+            System.out.println("4 - Swap demo (pass-by-value)");
+            System.out.println("5 - Box demo (object mutation)");
+            System.out.println("0 - Exit");
             System.out.print("Choose an option: ");
 
-            choice = sc.nextInt();
+            choice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choice) {
 
                 case 1:
-                    System.out.print("Enter student name: ");
-                    String name = sc.next();
-
-                    System.out.print("Enter grade: ");
-                    double grade = sc.nextDouble();
-
-                    roster.add(new Student(name, grade));
-                    System.out.println("Student added.");
+                    System.out.print("Enter your name: ");
+                    String name = scanner.nextLine();
+                    System.out.println(greet(name));
                     break;
 
                 case 2:
-                    if (roster.isEmpty()) {
-                        System.out.println("No students in the roster.");
+                    System.out.print("Sides (1 = square, 2 = rectangle): ");
+                    int sides = scanner.nextInt();
+
+                    if (sides == 1) {
+                        System.out.print("Enter side length: ");
+                        double side = scanner.nextDouble();
+                        System.out.println("Area of square = " + area(side));
+
+                    } else if (sides == 2) {
+                        System.out.print("Enter length: ");
+                        double length = scanner.nextDouble();
+
+                        System.out.print("Enter width: ");
+                        double width = scanner.nextDouble();
+
+                        System.out.println("Area of rectangle = " + area(length, width));
                     } else {
-                        System.out.println("\nClass List:");
-                        for (Student s : roster) {
-                            System.out.println(
-                                    s.name + " - " +
-                                            s.grade + " (" +
-                                            letterFor(s.grade) + ")");
-                        }
+                        System.out.println("Invalid choice.");
                     }
                     break;
 
                 case 3:
-                    if (roster.isEmpty()) {
-                        System.out.println("No students to average.");
-                    } else {
-                        double total = 0;
-
-                        for (Student s : roster) {
-                            total += s.grade;
-                        }
-
-                        double average = total / roster.size();
-
-                        System.out.printf("Class Average: %.2f (%s)%n",
-                                average, letterFor(average));
-                    }
+                    // Sample sums from the activity sheet
+                    System.out.println("Sum of 4, 8, 15 = " + sum(4, 8, 15));
+                    System.out.println("Sum of 2, 4, 6, 8, 10 = " + sum(2, 4, 6, 8, 10));
                     break;
 
                 case 4:
+                    int x = 5;
+                    int y = 9;
+
+                    System.out.println("Before swap: x = " + x + ", y = " + y);
+                    swap(x, y);
+                    System.out.println("After swap: x = " + x + ", y = " + y
+                            + " (unchanged - Java is pass-by-value)");
+                    break;
+
+                case 5:
+                    Box box = new Box(10);
+
+                    System.out.println("Before: box.value = " + box.value);
+                    addToBox(box, 25);
+                    System.out.println("After: box.value = " + box.value
+                            + " (changed - the object is shared)");
+                    break;
+
+                case 0:
                     System.out.println("Goodbye!");
                     break;
 
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("Invalid option. Please try again.");
             }
-        }
 
-        sc.close();
-    }
-}
+        } while (choice != 0);
 
-// Student class
-class Student {
-    String name;
-    double grade;
-
-    Student(String name, double grade) {
-        this.name = name;
-        this.grade = grade;
+        scanner.close();
     }
 }
