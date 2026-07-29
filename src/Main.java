@@ -1,134 +1,200 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
+// Book Class
+class Book {
+    private String title;
+    private String author;
+    private boolean isBorrowed;
+
+    // Constructor
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isBorrowed = false;
+    }
+
+    // Getters
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isBorrowed() {
+        return isBorrowed;
+    }
+
+    // Borrow a book
+    public void borrow() {
+        isBorrowed = true;
+    }
+
+    // Return a book
+    public void returnBook() {
+        isBorrowed = false;
+    }
+
+    // Display book information
+    public String describe() {
+        String status = isBorrowed ? "Borrowed" : "Available";
+        return title + " by " + author + " [" + status + "]";
+    }
+}
+
+
+// Library Class
+class Library {
+    private ArrayList<Book> books;
+
+    // Constructor
+    public Library() {
+        books = new ArrayList<>();
+    }
+
+    // Add a book
+    public void addBook(Book book) {
+        books.add(book);
+        System.out.println(">> Book added successfully.");
+    }
+
+    // List all books
+    public void listBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books in the library.");
+            return;
+        }
+
+        System.out.println("\n--- Library Catalog ---");
+
+        for (int i = 0; i < books.size(); i++) {
+            System.out.println((i + 1) + ". " + books.get(i).describe());
+        }
+    }
+
+    // Borrow a book
+    public void borrowBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+
+                if (!book.isBorrowed()) {
+                    book.borrow();
+                    System.out.println(">> You borrowed '" + book.getTitle() + "'.");
+                } else {
+                    System.out.println(">> This book is already borrowed.");
+                }
+
+                return;
+            }
+        }
+
+        System.out.println(">> Book not found.");
+    }
+
+    // Return a book
+    public void returnBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+
+                if (book.isBorrowed()) {
+                    book.returnBook();
+                    System.out.println(">> You returned '" + book.getTitle() + "'.");
+                } else {
+                    System.out.println(">> This book is already available.");
+                }
+
+                return;
+            }
+        }
+
+        System.out.println(">> Book not found.");
+    }
+
+    // Search a book
+    public void searchBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                System.out.println(">> Book found:");
+                System.out.println(book.describe());
+                return;
+            }
+        }
+
+        System.out.println(">> Book not found.");
+    }
+}
+
+
+// Main Class
 public class Main {
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
-        final int MAX = 10;
-        int[] id = new int[MAX];
-        String[] name = new String[MAX];
-        int[] age = new int[MAX];
-        String[] course = new String[MAX];
-        double[] grade = new double[MAX];
-        boolean[] enrolled = new boolean[MAX];
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
 
-        int count = 0, choice;
+        int choice;
 
         do {
-            System.out.println("\n===== STUDENT INFORMATION SYSTEM =====");
-            System.out.println("[1] Add Student");
-            System.out.println("[2] View All Students");
-            System.out.println("[3] Search Student by ID");
-            System.out.println("[4] View Statistics");
-            System.out.println("[5] Exit");
-            System.out.print("Choice: ");
-            choice = sc.nextInt();
+            System.out.println("\n===== LIBRARY INFORMATION SYSTEM =====");
+            System.out.println("1. Add a book");
+            System.out.println("2. List all books");
+            System.out.println("3. Borrow a book");
+            System.out.println("4. Return a book");
+            System.out.println("5. Search a book");
+            System.out.println("0. Exit");
+
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Clear input buffer
 
             switch (choice) {
+
                 case 1:
-                    if (count == MAX) {
-                        System.out.println("Student list is full!");
-                        break;
-                    }
+                    System.out.print("Enter title: ");
+                    String title = scanner.nextLine();
 
-                    System.out.print("ID: ");
-                    id[count] = sc.nextInt();
+                    System.out.print("Enter author: ");
+                    String author = scanner.nextLine();
 
-                    sc.nextLine();
-                    System.out.print("Name: ");
-                    name[count] = sc.nextLine();
-
-                    System.out.print("Age: ");
-                    age[count] = sc.nextInt();
-
-                    sc.nextLine();
-                    System.out.print("Course: ");
-                    course[count] = sc.nextLine();
-
-                    System.out.print("Grade: ");
-                    grade[count] = sc.nextDouble();
-
-                    System.out.print("Enrolled (true/false): ");
-                    enrolled[count] = sc.nextBoolean();
-
-                    count++;
-                    System.out.println("Student added!");
+                    Book book = new Book(title, author);
+                    library.addBook(book);
                     break;
 
                 case 2:
-                    if (count == 0) {
-                        System.out.println("No records.");
-                        break;
-                    }
-
-                    for (int i = 0; i < count; i++) {
-                        String standing;
-
-                        if (grade[i] >= 90)
-                            standing = "Dean's Lister";
-                        else if (grade[i] >= 75)
-                            standing = "Passed";
-                        else
-                            standing = "Failed";
-
-                        System.out.println("\nID: " + id[i]);
-                        System.out.println("Name: " + name[i]);
-                        System.out.println("Grade: " + grade[i]);
-                        System.out.println("Standing: " + standing);
-                    }
+                    library.listBooks();
                     break;
 
                 case 3:
-                    System.out.print("Enter ID: ");
-                    int search = sc.nextInt();
-                    boolean found = false;
-
-                    for (int i = 0; i < count; i++) {
-                        if (id[i] == search) {
-                            System.out.println("Name: " + name[i]);
-                            System.out.println("Course: " + course[i]);
-                            System.out.println("Grade: " + grade[i]);
-                            found = true;
-                        }
-                    }
-
-                    if (!found)
-                        System.out.println("Student not found.");
+                    System.out.print("Enter title to borrow: ");
+                    String borrowTitle = scanner.nextLine();
+                    library.borrowBook(borrowTitle);
                     break;
 
                 case 4:
-                    if (count == 0) {
-                        System.out.println("No records.");
-                        break;
-                    }
-
-                    double total = 0, topGrade = grade[0];
-                    String topStudent = name[0];
-
-                    for (int i = 0; i < count; i++) {
-                        total += grade[i];
-
-                        if (grade[i] > topGrade) {
-                            topGrade = grade[i];
-                            topStudent = name[i];
-                        }
-                    }
-
-                    System.out.println("Total Students: " + count);
-                    System.out.println("Average Grade: " + (total / count));
-                    System.out.println("Top Student: " + topStudent + " (" + topGrade + ")");
+                    System.out.print("Enter title to return: ");
+                    String returnTitle = scanner.nextLine();
+                    library.returnBook(returnTitle);
                     break;
 
                 case 5:
-                    System.out.println("Goodbye!");
+                    System.out.print("Enter title to search: ");
+                    String searchTitle = scanner.nextLine();
+                    library.searchBook(searchTitle);
+                    break;
+
+                case 0:
+                    System.out.println(">> Thank you for using the Library System. Goodbye!");
                     break;
 
                 default:
-                    System.out.println("Invalid choice!");
+                    System.out.println(">> Invalid choice. Please try again.");
             }
 
-        } while (choice != 5);
+        } while (choice != 0);
 
-        sc.close();
+        scanner.close();
     }
 }
