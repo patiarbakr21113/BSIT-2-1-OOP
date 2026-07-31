@@ -1,0 +1,161 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Participation {
+    string studentID;
+    string studentName;
+    string organizationName;
+    string activityName;
+    int hoursRendered;
+    Participation* next;
+};
+
+Participation* head = NULL;
+
+void addRecord() {
+    Participation* newNode = new Participation;
+
+    cout << "\nEnter Student ID: ";
+    cin >> newNode->studentID;
+    cin.ignore();
+
+    cout << "Enter Student Name: ";
+    getline(cin, newNode->studentName);
+
+    cout << "Enter Organization Name: ";
+    getline(cin, newNode->organizationName);
+
+    cout << "Enter Activity Name: ";
+    getline(cin, newNode->activityName);
+
+    cout << "Enter Hours Rendered: ";
+    cin >> newNode->hoursRendered;
+
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        Participation* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+
+    cout << "\nParticipation record added successfully!\n";
+}
+
+void searchRecord() {
+    if (head == NULL) {
+        cout << "\nNo records available.\n";
+        return;
+    }
+
+    string id;
+    cout << "\nEnter Student ID to search: ";
+    cin >> id;
+
+    Participation* temp = head;
+    bool found = false;
+
+    while (temp != NULL) {
+        if (temp->studentID == id) {
+            cout << "\nRecord Found!\n";
+            cout << "Student ID: " << temp->studentID << endl;
+            cout << "Student Name: " << temp->studentName << endl;
+            cout << "Organization: " << temp->organizationName << endl;
+            cout << "Activity: " << temp->activityName << endl;
+            cout << "Hours Rendered: " << temp->hoursRendered << endl;
+            found = true;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if (!found) {
+        cout << "\nRecord not found.\n";
+    }
+}
+
+void displayRecords() {
+    if (head == NULL) {
+        cout << "\nNo participation records available.\n";
+        return;
+    }
+
+    Participation* temp = head;
+
+    cout << "\n===== PARTICIPATION RECORDS =====\n";
+
+    while (temp != NULL) {
+        cout << "Student ID: " << temp->studentID << endl;
+        cout << "Student Name: " << temp->studentName << endl;
+        cout << "Organization: " << temp->organizationName << endl;
+        cout << "Activity: " << temp->activityName << endl;
+        cout << "Hours Rendered: " << temp->hoursRendered << endl;
+        cout << "-----------------------------------\n";
+        temp = temp->next;
+    }
+}
+
+void totalHours() {
+    if (head == NULL) {
+        cout << "\nNo records available.\n";
+        return;
+    }
+
+    int total = 0;
+    Participation* temp = head;
+
+    while (temp != NULL) {
+        total += temp->hoursRendered;
+        temp = temp->next;
+    }
+
+    cout << "\nTotal Hours Rendered by All Students: " << total << " hours\n";
+}
+
+int main() {
+    int choice;
+
+    do {
+        cout << "\n========== STUDENT ACTIVITY TRACKER ==========\n";
+        cout << "1. Add Participation Record\n";
+        cout << "2. Search Participation Record by Student ID\n";
+        cout << "3. Display All Participation Records\n";
+        cout << "4. Display Total Hours Rendered\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addRecord();
+                break;
+
+            case 2:
+                searchRecord();
+                break;
+
+            case 3:
+                displayRecords();
+                break;
+
+            case 4:
+                totalHours();
+                break;
+
+            case 5:
+                cout << "\nExiting program...\n";
+                break;
+
+            default:
+                cout << "\nInvalid choice. Try again.\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
