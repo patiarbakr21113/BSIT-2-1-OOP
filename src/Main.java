@@ -92,7 +92,7 @@ public class ToolBox {
                     break;
 
                 case 3:
-                    // Sample sums from the activity sheet
+                    
                     System.out.println("Sum of 4, 8, 15 = " + sum(4, 8, 15));
                     System.out.println("Sum of 2, 4, 6, 8, 10 = " + sum(2, 4, 6, 8, 10));
                     break;
