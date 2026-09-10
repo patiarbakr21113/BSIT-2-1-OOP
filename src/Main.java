@@ -1,93 +1,176 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // ONE list holds Cars AND Motorcycles
-        // because both ARE Vehicles.
-        ArrayList<Vehicle> vehicles = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        UserManager manager = new UserManager();
 
-        Scanner input = new Scanner(System.in);
-        int choice = 0;
+        int nextId = 1;
 
-        while (choice != 5) {
+        // Sample users
+        manager.add(new Admin(
+                nextId++,
+                "Razz",
+                "razz@liceo.edu.ph"
+        ));
+
+        manager.add(new Teacher(
+                nextId++,
+                "Maria",
+                "maria@liceo.edu.ph",
+                "CIT"
+        ));
+
+        manager.add(new Student(
+                nextId++,
+                "Ana",
+                "ana@liceo.edu.ph",
+                "BSIT"
+        ));
+
+        while (true) {
 
             System.out.println();
-            System.out.println("===== VEHICLE MANAGER =====");
-            System.out.println("1 - Add Car");
-            System.out.println("2 - Add Motorcycle");
-            System.out.println("3 - Remove a Vehicle");
-            System.out.println("4 - Display All Vehicles");
-            System.out.println("5 - Exit");
-            System.out.print("Choose an option: ");
+            System.out.println("=== USER MANAGEMENT SYSTEM ===");
+            System.out.println("1. Add User");
+            System.out.println("2. List Users");
+            System.out.println("3. Search User");
+            System.out.println("4. Delete User");
+            System.out.println("5. Export CSV");
+            System.out.println("6. Exit");
 
-            choice = input.nextInt();
-            input.nextLine(); // clear the leftover newline
+            int choice = readInt(scanner, "Choose an option: ");
 
-            if (choice == 1) {
+            switch (choice) {
 
-                System.out.print("Brand: ");
-                String brand = input.nextLine();
+                case 1:
+                    nextId = addUser(scanner, manager, nextId);
+                    break;
 
-                System.out.print("Year: ");
-                int year = input.nextInt();
+                case 2:
+                    manager.listAll();
+                    break;
 
-                System.out.print("Number of doors: ");
-                int doors = input.nextInt();
+                case 3:
+                    int searchId = readInt(scanner, "Enter user ID: ");
+                    User found = manager.findById(searchId);
 
-                // TODO 7 completed
-                vehicles.add(new Car(brand, year, doors));
+                    if (found == null) {
+                        System.out.println("User not found.");
+                    } else {
+                        found.display();
+                    }
+                    break;
 
-                System.out.println(">> Car added!");
+                case 4:
+                    int deleteId = readInt(scanner, "Enter user ID to delete: ");
 
-            } else if (choice == 2) {
+                    if (manager.deleteById(deleteId)) {
+                        System.out.println("User deleted successfully.");
+                    } else {
+                        System.out.println("User not found.");
+                    }
+                    break;
 
-                System.out.print("Brand: ");
-                String brand = input.nextLine();
+                case 5:
+                    manager.exportAll();
+                    break;
 
-                System.out.print("Year: ");
-                int year = input.nextInt();
+                case 6:
+                    System.out.println("Goodbye!");
+                    scanner.close();
+                    return;
 
-                System.out.print("Has sidecar? (true/false): ");
-                boolean sidecar = input.nextBoolean();
-
-                // TODO 8 completed
-                vehicles.add(new Motorcycle(brand, year, sidecar));
-
-                System.out.println(">> Motorcycle added!");
-
-            } else if (choice == 3) {
-
-                System.out.print("Enter the number to remove: ");
-                int number = input.nextInt();
-
-                // TODO 9 completed
-                if (number >= 1 && number <= vehicles.size()) {
-                    vehicles.remove(number - 1);
-                    System.out.println(">> Removed!");
-                } else {
-                    System.out.println(">> Invalid number.");
-                }
-
-            } else if (choice == 4) {
-
-                System.out.println("--- All Vehicles ---");
-
-                if (vehicles.isEmpty()) {
-                    System.out.println("(none yet)");
-                }
-
-                // TODO 10 completed
-                for (int i = 0; i < vehicles.size(); i++) {
-                    System.out.print((i + 1) + ". ");
-                    vehicles.get(i).displayInfo();
-                }
+                default:
+                    System.out.println("Invalid option.");
             }
         }
+    }
 
-        System.out.println("Goodbye!");
-        input.close();
+    private static int addUser(
+            Scanner scanner,
+            UserManager manager,
+            int nextId) {
+
+        System.out.println();
+        System.out.println("--- ADD USER ---");
+        System.out.println("1. Admin");
+        System.out.println("2. Teacher");
+        System.out.println("3. Student");
+
+        int type = readInt(scanner, "Choose user type: ");
+
+        System.out.print("Enter name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter email: ");
+        String email = scanner.nextLine();
+
+        User user;
+
+        switch (type) {
+
+            case 1:
+                user = new Admin(
+                        nextId,
+                        name,
+                        email
+                );
+                break;
+
+            case 2:
+                System.out.print("Enter department: ");
+                String department = scanner.nextLine();
+
+                user = new Teacher(
+                        nextId,
+                        name,
+                        email,
+                        department
+                );
+                break;
+
+            case 3:
+                System.out.print("Enter course: ");
+                String course = scanner.nextLine();
+
+                user = new Student(
+                        nextId,
+                        name,
+                        email,
+                        course
+                );
+                break;
+
+            default:
+                System.out.println("Invalid user type.");
+                return nextId;
+        }
+
+        manager.add(user);
+
+        return nextId + 1;
+    }
+
+    private static int readInt(
+            Scanner scanner,
+            String message) {
+
+        while (true) {
+
+            System.out.print(message);
+
+            try {
+                return Integer.parseInt(scanner.nextLine());
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Please enter a valid number."
+                );
+            }
+        }
     }
 }
